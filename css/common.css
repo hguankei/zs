@@ -1,0 +1,85 @@
+/* clearfix */
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  zoom: 1;
+}
+
+/* breadcrumb */
+.ui-breadcrumb {
+}
+.ui-breadcrumb ul:before,
+.ui-breadcrumb ul:after {
+  content: "";
+  display: table;
+}
+.ui-breadcrumb ul:after {
+  clear: both;
+}
+.ui-breadcrumb ul {
+  zoom: 1;
+}
+.ui-breadcrumb ul,
+.ui-breadcrumb ul li {
+  margin: 0;
+  padding: 0;
+}
+.ui-breadcrumb ul li {
+  list-style: none;
+}
+.ui-breadcrumb ul li {
+  float: left;
+  font-size: 1em;
+  color: #666;
+}
+.ui-breadcrumb ul li a {
+  color: #666;
+  text-decoration: none;
+}
+.ui-breadcrumb ul li a:hover {
+  color: #2b81ec;
+}
+.ui-breadcrumb ul li + li {
+  position: relative;
+  padding-left: 1em;
+}
+.ui-breadcrumb ul li + li:before {
+  content: "";
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+  top: .25em;
+  left: 1px;
+  z-index: 2;
+  display: block;
+  width: .5em;
+  height: .5em;
+  background: #fff;
+}
+.ui-breadcrumb ul li + li:after {
+  content: "";
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+  top: .25em;
+  left: 3px;
+  z-index: 1;
+  display: block;
+  width: .5em;
+  height: .5em;
+  background: #666;
+}
+.ui-breadcrumb ul li.active {
+  font-weight: bold;
+  color: #2b81ec;
+}
