@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>dialog</title>
+
+	<link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../src/dialog/dialog.css">
+
+	<script src="../lib/require.js"></script>
+    <script>
+    requirejs.config({
+        baseUrl: '../src/',
+        paths: {
+            popup: '../../lib/popup',
+            jquery: '../../lib/jquery-2.1.3'
+        }
+    })
+    </script>
+</head>
+<body>
+	<div class="ui-breadcrumb">
+        <ul>
+            <li><a href="../../">返回</a>
+            </li>
+            <li class="active">dialog</li>
+        </ul>
+    </div>
+
+
+	<h1>模态浮层</h1>
+
+	<button>dialog</button>
+
+	<script>
+	requirejs(['dialog/jquery.dialog'], function (Dialog) {
+		console.log(Dialog);
+	})
+	</script>
+
+</body>
+</html>
