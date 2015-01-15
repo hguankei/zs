@@ -1,356 +1,15 @@
 /**
  * selectbox
- * base on http://aui.github.io/popupjs/doc/selectbox.html
+ * base on https://github.com/aui/popupjs
  */
 
 (function(factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['jquery'], factory);
+        define(['jquery', 'popup'], factory);
     } else {
         factory(jQuery);
     }
-}(function($) {
-
-    var Popup = function() {
-        this.__popup = $('<div />')
-            .css({
-                display: 'none',
-                position: 'absolute',
-                outline: 0
-            })
-            .attr('tabindex', '-1')
-            .html(this.innerHTML)
-            .appendTo('body');
-
-
-        this.__backdrop = $('<div />')
-            .css({
-                position: 'fixed',
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%',
-                overflow: 'hidden',
-                opacity: 0,
-                background: '#fff',
-                zIndex: this.zIndex || Popup.zIndex
-            });
-
-        this.node = this.__popup[0];
-        this.backdrop = this.__backdrop[0];
-    };
-
-    /* 当前叠加层级 */
-    Popup.zIndex = 1024;
-
-    /** 当前浮层的实例 */
-    Popup.current = null;
-
-    $.extend(Popup.prototype, {
-        constructor: Popup,
-
-
-        /**
-         * onshow
-         */
-        /**
-         * onremove
-         */
-
-        className: 'ui-popup',
-        /** 是否自动聚焦 */
-        autofocus: true,
-        /** 判断对话框是否显示 */
-        open: false,
-
-        show: function(anchor) {
-
-            var that = this;
-            var popup = this.__popup;
-            var backdrop = this.__backdrop;
-
-            this.__activeElement = this.__getActive();
-            this.open = true;
-
-            this.follow = anchor || this.follow;
-
-            $(window).on('resize', $.proxy(this.reset, this));
-
-            popup
-                .addClass(this.className)
-                .attr('role', 'dialog');
-
-            backdrop
-                .addClass(this.className + '-backdrop')
-                .insertBefore(popup);
-
-            if (!popup.html()) {
-                popup.html(this.innerHTML);
-            }
-
-            popup
-                .addClass(this.className + '-show')
-                .show();
-
-            this.reset().focus();
-
-            backdrop.show();
-
-            this.__dispatchEvent('show');
-            return this
-        },
-        /** 重置位置 */
-        reset: function() {
-
-            var $elem = $(this.follow);
-
-            if (!($elem[0].parentNode)) {
-                // this.remove();
-                return false;
-            }
-
-
-            var popup = this.__popup;
-
-            if (this.__followSkin) {
-                popup.removeClass(this.__followSkin);
-            }
-
-            var that = this;
-
-            var $window = $(window);
-            var $document = $(document);
-            var winWidth = $window.width();
-            var winHeight = $window.height();
-            var docLeft = $document.scrollLeft();
-            var docTop = $document.scrollTop();
-
-
-            var popupWidth = popup.width();
-            var popupHeight = popup.height();
-            var width = $elem ? $elem.outerWidth() : 0;
-            var height = $elem ? $elem.outerHeight() : 0;
-            var offset = this.__offset(this.follow);
-            var left = offset.left;
-            var top = offset.top;
-
-            var minLeft = docLeft;
-            var minTop = docTop;
-            var maxLeft = minLeft + winWidth - popupWidth;
-            var maxTop = minTop + winHeight - popupHeight;
-
-            var css = {};
-            var align = ['bottom', 'left'];
-            var className = this.className + '-';
-
-            var reverse = {
-                top: 'bottom',
-                bottom: 'top',
-                left: 'right',
-                right: 'left'
-            };
-            var name = {
-                top: 'top',
-                bottom: 'top',
-                left: 'left',
-                right: 'left'
-            };
-
-            var temp = [{
-                top: top - popupHeight,
-                bottom: top + height,
-                left: left - popupWidth,
-                right: left + width
-            }, {
-                top: top,
-                bottom: top - popupHeight + height,
-                left: left,
-                right: left - popupWidth + width
-            }];
-
-
-            var center = {
-                left: left + width / 2 - popupWidth / 2,
-                top: top + height / 2 - popupHeight / 2
-            };
-
-
-            var range = {
-                left: [minLeft, maxLeft],
-                top: [minTop, maxTop]
-            };
-
-
-            // 超出可视区域重新适应位置
-            $.each(align, function(i, val) {
-
-                // 超出右或下边界：使用左或者上边对齐
-                if (temp[i][val] > range[name[val]][1]) {
-                    val = align[i] = reverse[val];
-                }
-
-                // 超出左或右边界：使用右或者下边对齐
-                if (temp[i][val] < range[name[val]][0]) {
-                    align[i] = reverse[val];
-                }
-
-            });
-
-
-            // 一个参数的情况
-            if (!align[1]) {
-                name[align[1]] = name[align[0]] === 'left' ? 'top' : 'left';
-                temp[1][align[1]] = center[name[align[1]]];
-            }
-
-
-            //添加follow的css, 为了给css使用
-            className += align.join('-') + ' ' + this.className + '-follow';
-
-            that.__followSkin = className;
-
-
-            if ($elem) {
-                popup.addClass(className);
-            }
-
-
-            css[name[align[0]]] = parseInt(temp[0][align[0]]);
-            css[name[align[1]]] = parseInt(temp[1][align[1]]);
-            popup.css(css);
-
-
-            return this;
-        },
-        /** 关闭浮层 */
-        close: function() {
-
-            if (this.open) {
-                this.__popup.hide().removeClass(this.className + '-show');
-                this.__backdrop.hide();
-                this.open = false;
-                this.blur(); // 恢复焦点，照顾键盘操作的用户
-                this.__dispatchEvent('close');
-            }
-            return this;
-        },
-        /** 销毁浮层 */
-        remove: function() {
-
-            if (Popup.current === this) {
-                Popup.current = null;
-            }
-
-            // 从 DOM 中移除节点
-            this.__popup.remove();
-            this.__backdrop.remove();
-
-            $(window).off('resize', this.reset);
-
-            this.__dispatchEvent('remove');
-
-            for (var i in this) {
-                delete this[i];
-            }
-
-            return this;
-        },
-
-
-        /** 让浮层获取焦点 */
-        focus: function() {
-
-            var node = this.node;
-            var popup = this.__popup;
-            var current = Popup.current;
-            var index = this.zIndex = Popup.zIndex++;
-
-            this.__focus(node);
-
-            // 设置叠加高度
-            popup.css('zIndex', index);
-
-            Popup.current = this;
-            popup.addClass(this.className + '-focus');
-
-            this.__dispatchEvent('focus');
-
-            return this;
-        },
-
-        /** 让浮层失去焦点。将焦点退还给之前的元素，照顾视力障碍用户 */
-        blur: function() {
-
-            var activeElement = this.__activeElement;
-
-            this.__focus(activeElement);
-
-            this.__popup.removeClass(this.className + '-focus');
-            this.__dispatchEvent('blur');
-
-            return this;
-        },
-
-        // 获取当前焦点的元素
-        __getActive: function() {
-            try { // try: ie8~9, iframe #26
-                var activeElement = document.activeElement;
-                var contentDocument = activeElement.contentDocument;
-                var elem = contentDocument && contentDocument.activeElement || activeElement;
-                return elem;
-            } catch (e) {}
-        },
-
-        // 对元素安全聚焦
-        __focus: function(elem) {
-            // 防止 iframe 跨域无权限报错
-            // 防止 IE 不可见元素报错
-            try {
-                // ie11 bug: iframe 页面点击会跳到顶部
-                if (this.autofocus && !/^iframe$/i.test(elem.nodeName)) {
-                    elem.focus();
-                }
-            } catch (e) {}
-        },
-
-        // 获取元素相对于页面的位置（包括iframe内的元素）
-        // 暂时不支持两层以上的 iframe 套嵌
-        __offset: function(anchor) {
-
-            var offset = $(anchor).offset();
-
-            var ownerDocument = anchor.ownerDocument;
-            var defaultView = ownerDocument.defaultView || ownerDocument.parentWindow;
-
-            if (defaultView == window) { // IE <= 8 只能使用两个等于号
-                return offset;
-            }
-
-            // {Element: Ifarme}
-            var frameElement = defaultView.frameElement;
-            var $ownerDocument = $(ownerDocument);
-            var docLeft = $ownerDocument.scrollLeft();
-            var docTop = $ownerDocument.scrollTop();
-            var frameOffset = $(frameElement).offset();
-            var frameLeft = frameOffset.left;
-            var frameTop = frameOffset.top;
-
-            return {
-                left: frameLeft + offset.left - docLeft,
-                top: frameTop + offset.top - docTop
-            }
-        },
-
-        // 派发事件
-        __dispatchEvent: function(type) {
-            if (this['on' + type]) {
-                this['on' + type]();
-            }
-        }
-    });
-
-
-
+}(function($, Popup) {
 
     var Select = function(elem, options) {
         $select = this.$select = $(elem);
@@ -465,9 +124,9 @@
             popup.node.innerHTML = this._dropdownHtml();
 
             this._dropdown = $(popup.node);
-
-
-            $(popup.backdrop).on(this._clickType, $.proxy(this.close, this));
+            $(popup.backdrop)
+                .css('opacity', 0)
+                .on(this._clickType, $.proxy(this.close, this));
 
 
             var children = that._dropdown.children();
@@ -508,7 +167,7 @@
             // 记录展开前的 value
             this._oldValue = this.$select.val();
 
-            popup.show(selectbox[0]);
+            popup.showModal(selectbox[0]);
         },
 
         // 检查当前项是否被禁用
@@ -568,7 +227,10 @@
             this._selectbox.removeClass(this.focusClass);
         },
 
-
+        remove: function () {
+            this.close();
+            this._selectbox.remove();
+        },
 
         // 获取原生 select 的 option jquery 对象
         _getOption: function(index) {
