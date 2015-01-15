@@ -3,13 +3,7 @@
  * base on https://github.com/aui/popupjs
  */
 
-(function(factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(['jquery', 'popup'], factory);
-    } else {
-        factory(jQuery);
-    }
-}(function($, Popup) {
+define(['jquery', 'popup'], function($, Popup) {
 
     var Select = function(elem, options) {
         $select = this.$select = $(elem);
@@ -370,4 +364,4 @@
         }
     };
 
-}))
+})
