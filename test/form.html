@@ -124,9 +124,12 @@
             </select>
         </p>
 
+        <p>
+            <select class="ui-select J_Select"></select>
+        </p>
 
+        <button id="J_SelectBeautifyBtn">beautify</button>
 
-        <select class="ui-select J_Select"></select>
         <script>
         require(['select/jquery.select'], function(Select) {
             var s = document.getElementById('J_Select');
@@ -134,7 +137,9 @@
                 s.options[i] = new Option(i, i);
             }
             s.selectedIndex = 50;
-            new Select('.J_Select', {});
+            $('#J_SelectBeautifyBtn').on('click', function() {
+                new Select('.J_Select', {});
+            });
         })
         </script>
     </section>

@@ -227,10 +227,10 @@
             this._selectbox.removeClass(this.focusClass);
         },
 
-        remove: function () {
-            this.close();
-            this._selectbox.remove();
-        },
+        // remove: function() {
+        //     this.close();
+        //     this._selectbox.remove();
+        // },
 
         // 获取原生 select 的 option jquery 对象
         _getOption: function(index) {
@@ -360,6 +360,7 @@
     return function(elem, options) {
         // 注意：不要返回 Select 更多接口给外部，只保持装饰用途
         // 保证模拟的下拉是原生控件的子集，这样可以随时在项目中撤销装饰
+
         if (elem.type === 'select') {
             new Select(elem, options);
         } else {
