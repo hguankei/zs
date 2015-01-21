@@ -70,9 +70,11 @@ define(['jquery', 'popup'], function($, Popup) {
 
     };
 
-    $.extend(Select.prototype, {
+    Select.prototype = {
+        constructor: Select
+    };
 
-        constructor: Select,
+    $.extend(Select.prototype, {
 
         selectHtml: '<div class="ui-select" tabindex="-1" aria-hidden><div class="ui-select-inner" data-value="">{{textContent}}</div><i class="ui-select-ico"></i></div>',
         dropdownHtml: '<dl class="ui-select-dropdown">{{options}}</dl>',
