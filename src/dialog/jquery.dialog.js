@@ -436,7 +436,7 @@ define(['jquery', 'popup'], function($, Popup) {
             that._createOptions(elem)
         });
 
-        var triggerType = this.triggerType = 'onmouseenter' in document ? 'hover' : 'click';
+        var triggerType = this.triggerType = 'onmousedown' in document ? 'hover' : 'click';
 
         if (triggerType === 'hover') {
 
