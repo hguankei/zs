@@ -19,7 +19,7 @@
         border:1px solid #abd3ea;
         border-radius: 6px;
     }
-    .follow-elem span,.follow-elem input {
+    .follow-elem input {
         display: block;
         width: 14px;
         height: 14px;
@@ -148,19 +148,11 @@
     <section>
         <h3>tooltips hover态</h3>
         <div style="height: 300px;">
-            <div class="follow-elem">
-                <span class="J_Tooltips nw" data-tooltips="align:top left|content:top left">tl</span>
-                <span class="J_Tooltips n" data-tooltips="align:top|content:top">t</span>
-                <span class="J_Tooltips ne" data-tooltips="align:top right|content:top right">tr</span>
-                <span class="J_Tooltips en" data-tooltips="align:right top|content:right top">rt</span>
-                <span class="J_Tooltips e" data-tooltips="align:right|content:right">r</span>
-                <span class="J_Tooltips es" data-tooltips="align:right bottom|content:right bottom">rb</span>
-                <span class="J_Tooltips se" data-tooltips="align:bottom right|content:bottom right">br</span>
-                <span class="J_Tooltips s" data-tooltips="align:bottom|content:bottom">b</span>
-                <span class="J_Tooltips sw" data-tooltips="align:bottom left|content:bottom left">bl</span>
-                <span class="J_Tooltips ws" data-tooltips="align:left bottom|content:left bottom">lb</span>
-                <span class="J_Tooltips w" data-tooltips="align:left|content:left">l</span>
-                <span class="J_Tooltips wn" data-tooltips="align:left top|content:left top">lt</span>
+            <div>
+                <span class="J_Tooltips n" title="normal" data-tooltips="align:top left">topLeft</span>
+                <span class="J_Tooltips e" title="primary" data-tooltips="align:right|type:primary">right</span>
+                <span class="J_Tooltips s" title="info" data-tooltips="align:bottom|type:info">bottom</span>
+                <span class="J_Tooltips w" title="attention" data-tooltips="align:left|type:attention">left</span>
             </div>
         </div>
     </section>
@@ -206,7 +198,6 @@
         });
 
         var t = dialog.tooltips('.J_Tooltips');
-
     })
     </script>
 

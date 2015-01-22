@@ -392,9 +392,7 @@ define(['jquery', 'popup'], function($, Popup) {
         /** 模拟鼠标经过hover态的tooltips */
         tooltips: function (anchor, options) {
 
-            if ($(anchor).length === 0) return this;
-
-            return new dialog.tooltips.create(anchor, options);
+            return $(anchor).length === 0 ? this : new dialog.tooltips.create(anchor, options);
 
         },
         notice: function (options) {
@@ -402,11 +400,13 @@ define(['jquery', 'popup'], function($, Popup) {
             var className = 'ui-dialog-tips ui-dialog-tips-' + options.type;
             var padding   = options.padding || '20px 30px';
             var timeout   = options.timeout || 1500;
+            var fixed     = options.fixed || true;
 
             var d = dialog({
                 skin: className,
                 content: options.content,
                 padding: padding,
+                fixed: fixed
             }).show();
 
             setTimeout(function() {
@@ -481,6 +481,7 @@ define(['jquery', 'popup'], function($, Popup) {
             var $elem = $(elem);
             var singleOptions = $elem.attr('data-tooltips');
             var opts = $.extend({}, this.options);
+            var title = $elem.attr('title');
 
             if (singleOptions) {
                 var optsArr = singleOptions.split('|');
@@ -489,6 +490,9 @@ define(['jquery', 'popup'], function($, Popup) {
                     opts[opt[0]] = opt[1];
                 });
             }
+
+            opts.content = $elem.attr('title') || opts.content;
+            $elem.removeAttr('title');
 
             $elem.data('tooltips', opts);
 
@@ -509,6 +513,15 @@ define(['jquery', 'popup'], function($, Popup) {
             } else {
                 $('body').on(triggerType + '.' + this.id);
             }
+
+            $.each(this.$anchor, function (i, elem) {
+                var $elem = $(elem);
+                var data  = $elem.data('tooltips');
+
+                $elem.attr('title', data.content);
+                $elem.removeData('tooltips');
+
+            });
 
             for (var i in this) {
                 delete this[i];
